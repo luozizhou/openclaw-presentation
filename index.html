@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw Presentation - Document Library</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            padding: 20px 0;
+        }
+        
+        .doc-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .doc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+        
+        .doc-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        
+        .doc-card h2 {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+            color: #2d3748;
+        }
+        
+        .doc-card .subtitle {
+            color: #718096;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+        }
+        
+        .doc-card .description {
+            color: #4a5568;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+        
+        .topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .topic-tag {
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+        
+        .doc-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+        
+        .btn-secondary {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        .stats {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .stat-item h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        
+        .stat-item p {
+            opacity: 0.8;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        .pdf-viewer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .pdf-viewer.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pdf-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #2d3748;
+            color: white;
+        }
+        
+        .pdf-toolbar h3 {
+            margin: 0;
+        }
+        
+        .pdf-toolbar button {
+            background: #e53e3e;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .pdf-frame {
+            flex: 1;
+            border: none;
+            background: white;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .docs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .doc-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🦞 OpenClaw Presentation</h1>
+            <p>Document Library - Learn, Share, and Master OpenClaw</p>
+        </header>
+        
+        <div class="stats">
+            <h2>Library Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>3</h3>
+                    <p>Documents</p>
+                </div>
+                <div class="stat-item">
+                    <h3>12+</h3>
+                    <p>Topics Covered</p>
+                </div>
+                <div class="stat-item">
+                    <h3>100%</h3>
+                    <p>Open Source</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="docs-grid">
+            <!-- Document 1 -->
+            <div class="doc-card">
+                <div class="doc-icon">🌐</div>
+                <h2>AI Prompt Language Selection Guide</h2>
+                <p class="subtitle">English vs Chinese - Which is Better?</p>
+                <p class="description">
+                    Deep analysis of training data distribution, performance comparison between English and Chinese prompts, and practical recommendations for optimal results.
+                </p>
+                <div class="topics">
+                    <span class="topic-tag">Training Data</span>
+                    <span class="topic-tag">Performance Testing</span>
+                    <span class="topic-tag">Best Practices</span>
+                </div>
+                <div class="doc-actions">
+                    <a href="documents/language-guide.pdf" class="btn btn-primary" target="_blank">📄 View PDF</a>
+                    <a href="https://gitee.com/luozizhou/openclaw-private/blob/master/materials/language-choice/material_language_choice.tex" class="btn btn-secondary" target="_blank">🔍 Source</a>
+                </div>
+            </div>
+            
+            <!-- Document 2 -->
+            <div class="doc-card">
+                <div class="doc-icon">🛠️</div>
+                <h2>OpenClaw Skills Deep Dive</h2>
+                <p class="subtitle">Understanding the Extension System</p>
+                <p class="description">
+                    Comprehensive guide to OpenClaw Skills architecture, structure, triggering mechanisms, with detailed github skill examples.
+                </p>
+                <div class="topics">
+                    <span class="topic-tag">Architecture</span>
+                    <span class="topic-tag">github Skill</span>
+                    <span class="topic-tag">Installation</span>
+                </div>
+                <div class="doc-actions">
+                    <a href="documents/skills-guide.pdf" class="btn btn-primary" target="_blank">📄 View PDF</a>
+                    <a href="https://gitee.com/luozizhou/openclaw-private/blob/master/materials/skills-deep-dive/material_skills_deep_dive.tex" class="btn btn-secondary" target="_blank">🔍 Source</a>
+                </div>
+            </div>
+            
+            <!-- Document 3 -->
+            <div class="doc-card">
+                <div class="doc-icon">🔒</div>
+                <h2>AI Skills Security Risk Warning</h2>
+                <p class="subtitle">Protecting Your Digital Assets</p>
+                <p class="description">
+                    Security threat analysis for AI Skills including data theft, permission abuse, malicious code, and real case studies with protection strategies.
+                </p>
+                <div class="topics">
+                    <span class="topic-tag">Risk Analysis</span>
+                    <span class="topic-tag">Real Cases</span>
+                    <span class="topic-tag">Protection</span>
+                </div>
+                <div class="doc-actions">
+                    <a href="documents/security-guide.pdf" class="btn btn-primary" target="_blank">📄 View PDF</a>
+                    <a href="https://gitee.com/luozizhou/openclaw-private/blob/master/materials/skills-security/material_skills_security.tex" class="btn btn-secondary" target="_blank">🔍 Source</a>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created with OpenClaw | Continuously Updated | Welcome to Contribute</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                <a href="https://gitee.com/luozizhou/openclaw-presentation" style="color: white;">Public Repository</a> | 
+                <a href="https://gitee.com/luozizhou/openclaw-private" style="color: white;">Private Repository</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
