@@ -1,0 +1,32 @@
+[
+  {
+    "id": "skills-guide",
+    "title": "OpenClaw Skills Deep Dive",
+    "subtitle": "Understanding the Extension System",
+    "description": "Comprehensive guide to OpenClaw Skills architecture, structure, triggering mechanisms, with detailed github skill examples.",
+    "topics": [
+      "What are Skills",
+      "Skill Structure",
+      "github Skill Example",
+      "Installation & Usage"
+    ],
+    "path": "documents/skills-guide.pdf",
+    "size": 100489,
+    "url": "https://gitee.com/luozizhou/openclaw-presentation/blob/master/documents/skills-guide.pdf"
+  },
+  {
+    "id": "security-guide",
+    "title": "AI Skills Security Risk Warning",
+    "subtitle": "Protecting Your Digital Assets",
+    "description": "Security threat analysis for AI Skills including data theft, permission abuse, malicious code, and real case studies with protection strategies.",
+    "topics": [
+      "Risk Types",
+      "Real Cases",
+      "Protection Strategies",
+      "Security Checklist"
+    ],
+    "path": "documents/security-guide.pdf",
+    "size": 98614,
+    "url": "https://gitee.com/luozizhou/openclaw-presentation/blob/master/documents/security-guide.pdf"
+  }
+]
