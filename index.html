@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OpenClaw 演示文档库</title>
+    
+    <!-- PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -56,12 +60,12 @@
             padding: 40px 20px;
         }
         
-        /* Featured Section */
-        .featured {
+        /* Section */
+        section {
             margin-bottom: 48px;
         }
         
-        .featured h2 {
+        section h2 {
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -69,13 +73,14 @@
             margin-bottom: 16px;
         }
         
+        /* Featured Grid */
         .featured-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 16px;
         }
         
-        .featured-card {
+        .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
@@ -87,41 +92,29 @@
             display: block;
         }
         
-        .featured-card:hover {
+        .card:hover {
             border-color: var(--accent);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         
-        .featured-card .icon {
+        .card .icon {
             font-size: 2rem;
             margin-bottom: 12px;
         }
         
-        .featured-card h3 {
+        .card h3 {
             font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 4px;
         }
         
-        .featured-card p {
+        .card p {
             font-size: 0.9rem;
             color: var(--text-secondary);
         }
         
         /* Document List */
-        .documents {
-            margin-bottom: 48px;
-        }
-        
-        .documents h2 {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-        }
-        
         .doc-list {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -136,8 +129,6 @@
             border-bottom: 1px solid var(--border);
             cursor: pointer;
             transition: background 0.15s ease;
-            text-decoration: none;
-            color: inherit;
         }
         
         .doc-item:last-child {
@@ -182,63 +173,114 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.8);
             z-index: 1000;
         }
         
         .modal.active {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
-        
-        .modal-content {
-            background: var(--card-bg);
-            border-radius: 12px;
-            width: 100%;
-            max-width: 1000px;
-            height: 90vh;
-            display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
         
         .modal-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            background: #1a1a1a;
+            color: white;
         }
         
         .modal-header h3 {
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 500;
         }
         
         .modal-close {
             background: none;
             border: none;
+            color: white;
             font-size: 1.5rem;
             cursor: pointer;
-            color: var(--text-secondary);
-            padding: 4px;
+            padding: 4px 12px;
         }
         
         .modal-close:hover {
-            color: var(--text);
+            opacity: 0.8;
         }
         
         .modal-body {
             flex: 1;
-            overflow: hidden;
+            overflow: auto;
+            background: #525659;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
         }
         
-        .modal-body iframe {
-            width: 100%;
-            height: 100%;
+        #pdfCanvas {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 100%;
+        }
+        
+        /* PDF Navigation */
+        .pdf-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 12px;
+            background: #2a2a2a;
+            color: white;
+        }
+        
+        .pdf-nav button {
+            background: #3a3a3a;
             border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .pdf-nav button:hover {
+            background: #4a4a4a;
+        }
+        
+        .pdf-nav button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pdf-nav span {
+            font-size: 0.9rem;
+        }
+        
+        /* Loading */
+        .loading {
+            display: none;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 3px solid #3a3a3a;
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         /* Footer */
@@ -269,18 +311,12 @@
                 font-size: 1.5rem;
             }
             
-            .container {
-                padding: 24px 16px;
-            }
-            
             .modal.active {
                 padding: 0;
             }
             
-            .modal-content {
-                border-radius: 0;
-                height: 100vh;
-                max-width: 100%;
+            .modal-body {
+                padding: 10px;
             }
         }
     </style>
@@ -296,61 +332,68 @@
         <section class="featured">
             <h2>精选内容</h2>
             <div class="featured-grid">
-                <a href="#" class="featured-card" onclick="openPdf('skills-guide'); return false;">
+                <div class="card" onclick="openPdf('skills-guide')">
                     <div class="icon">🛠️</div>
                     <h3>Skills 深度解析</h3>
                     <p>理解 OpenClaw 扩展系统架构</p>
-                </a>
-                <a href="#" class="featured-card" onclick="openPdf('security-guide'); return false;">
+                </div>
+                <div class="card" onclick="openPdf('security-guide')">
                     <div class="icon">🔒</div>
                     <h3>安全风险警示</h3>
                     <p>保护你的数字资产</p>
-                </a>
+                </div>
             </div>
         </section>
         
-        <!-- All Documents List -->
+        <!-- All Documents -->
         <section class="documents">
             <h2>全部文档</h2>
             <div class="doc-list">
-                <a href="#" class="doc-item" onclick="openPdf('language-guide'); return false;">
+                <div class="doc-item" onclick="openPdf('language-guide')">
                     <span class="icon">🌐</span>
                     <div class="info">
                         <h3>AI 指令语言选择指南</h3>
                         <span class="meta">英文 vs 中文：哪个更好？</span>
                     </div>
                     <span class="arrow">→</span>
-                </a>
-                <a href="#" class="doc-item" onclick="openPdf('skills-guide'); return false;">
+                </div>
+                <div class="doc-item" onclick="openPdf('skills-guide')">
                     <span class="icon">🛠️</span>
                     <div class="info">
                         <h3>OpenClaw Skills 深度解析</h3>
                         <span class="meta">理解扩展系统架构</span>
                     </div>
                     <span class="arrow">→</span>
-                </a>
-                <a href="#" class="doc-item" onclick="openPdf('security-guide'); return false;">
+                </div>
+                <div class="doc-item" onclick="openPdf('security-guide')">
                     <span class="icon">🔒</span>
                     <div class="info">
                         <h3>AI Skills 安全风险警示</h3>
                         <span class="meta">保护你的数字资产</span>
                     </div>
                     <span class="arrow">→</span>
-                </a>
+                </div>
             </div>
         </section>
     </main>
     
     <!-- PDF Viewer Modal -->
     <div class="modal" id="pdfModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modalTitle">文档标题</h3>
-                <button class="modal-close" onclick="closePdf()">×</button>
+        <div class="modal-header">
+            <h3 id="modalTitle">文档标题</h3>
+            <button class="modal-close" onclick="closePdf()">×</button>
+        </div>
+        <div class="pdf-nav">
+            <button onclick="prevPage()" id="prevBtn">◀ 上一页</button>
+            <span id="pageInfo">第 1 页</span>
+            <button onclick="nextPage()" id="nextBtn">下一页 ▶</button>
+        </div>
+        <div class="modal-body">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>加载中...</p>
             </div>
-            <div class="modal-body">
-                <iframe id="pdfFrame" src=""></iframe>
-            </div>
+            <canvas id="pdfCanvas"></canvas>
         </div>
     </div>
     
@@ -359,7 +402,11 @@
     </footer>
     
     <script>
-        const pdfUrls = {
+        // Configure PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        // PDF sources (from Gitee)
+        const pdfSources = {
             'language-guide': 'https://gitee.com/luozizhou/openclaw-presentation/raw/master/documents/language-guide.pdf',
             'skills-guide': 'https://gitee.com/luozizhou/openclaw-presentation/raw/master/documents/skills-guide.pdf',
             'security-guide': 'https://gitee.com/luozizhou/openclaw-presentation/raw/master/documents/security-guide.pdf'
@@ -371,37 +418,124 @@
             'security-guide': 'AI Skills 安全风险警示'
         };
         
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.5;
+        
+        const canvas = document.getElementById('pdfCanvas');
+        const ctx = canvas.getContext('2d');
+        
         function openPdf(id) {
             const modal = document.getElementById('pdfModal');
-            const frame = document.getElementById('pdfFrame');
             const title = document.getElementById('modalTitle');
+            const loading = document.getElementById('loading');
             
-            frame.src = pdfUrls[id] || '';
-            title.textContent = pdfTitles[id] || '文档';
+            title.textContent = pdfTitles[id];
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            
+            loading.classList.add('active');
+            canvas.style.display = 'none';
+            
+            // Load PDF
+            const url = pdfSources[id];
+            pdfDoc = null;
+            pageNum = 1;
+            
+            pdfjsLib.getDocument(url).promise.then(function(pdf) {
+                pdfDoc = pdf;
+                document.getElementById('pageInfo').textContent = '第 1 / ' + pdf.numPages + ' 页';
+                document.getElementById('prevBtn').disabled = true;
+                document.getElementById('nextBtn').disabled = pdf.numPages <= 1;
+                
+                loading.classList.remove('active');
+                canvas.style.display = 'block';
+                
+                renderPage(1);
+            }).catch(function(error) {
+                console.error('Error loading PDF:', error);
+                loading.innerHTML = '<p>加载失败，请稍后重试</p>';
+            });
         }
         
         function closePdf() {
             const modal = document.getElementById('pdfModal');
-            const frame = document.getElementById('pdfFrame');
-            
             modal.classList.remove('active');
-            frame.src = '';
             document.body.style.overflow = '';
+            
+            pdfDoc = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
         
-        // Close modal on background click
+        function renderPage(num) {
+            pageRendering = true;
+            
+            pdfDoc.getPage(num).then(function(page) {
+                const viewport = page.getViewport({ scale: scale });
+                
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                
+                const renderTask = page.render(renderContext);
+                
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+            
+            document.getElementById('pageInfo').textContent = '第 ' + num + ' / ' + pdfDoc.numPages + ' 页';
+            document.getElementById('prevBtn').disabled = num <= 1;
+            document.getElementById('nextBtn').disabled = num >= pdfDoc.numPages;
+        }
+        
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+        
+        function prevPage() {
+            if (pageNum <= 1) return;
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+        
+        function nextPage() {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+        
+        // Close on background click
         document.getElementById('pdfModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closePdf();
             }
         });
         
-        // Close modal on Escape key
+        // Close on Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closePdf();
+            }
+            if (e.key === 'ArrowLeft') {
+                prevPage();
+            }
+            if (e.key === 'ArrowRight') {
+                nextPage();
             }
         });
     </script>
